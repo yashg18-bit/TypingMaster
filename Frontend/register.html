@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypingMaster Register</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family:'Segoe UI',sans-serif;
+            background:#f6f3ed;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            height:100vh;
+        }
+
+        .auth-card{
+            width:350px;
+            background:white;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .auth-card h1{
+            text-align:center;
+            color:#171736;
+            margin-bottom:10px;
+        }
+
+        .auth-card h2{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        .auth-card input{
+            width:100%;
+            padding:14px;
+            margin-bottom:15px;
+            border:1px solid #ddd;
+            border-radius:10px;
+            box-sizing:border-box;
+        }
+
+        .auth-card button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:#171736;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .auth-card p{
+            text-align:center;
+            margin-top:15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-card">
+
+    <h1>⚡ TypingMaster</h1>
+
+    <h2>Create Account</h2>
+
+    <input type="text"
+           id="username"
+           placeholder="Username">
+
+    <input type="email"
+           id="email"
+           placeholder="Email">
+
+    <input type="password"
+           id="password"
+           placeholder="Password">
+
+    <button onclick="registerUser()">
+        Register
+    </button>
+
+    <p>
+        Already have an account?
+        <a href="login.html">Login</a>
+    </p>
+
+</div>
+
+<script>
+async function registerUser(){
+
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const response = await fetch("http://localhost:8080/register",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            username,
+            email,
+            password
+        })
+    });
+
+    if(response.ok){
+        alert("Registration Successful");
+        window.location.href="login.html";
+    }else{
+        alert("Registration Failed");
+    }
+}
+</script>
+
+</body>
+</html>

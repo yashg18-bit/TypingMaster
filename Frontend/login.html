@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TypingMaster Login</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:#f5f5f5;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            width:300px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input{
+            width:100%;
+            padding:10px;
+            margin:10px 0;
+        }
+
+        button{
+            width:100%;
+            padding:10px;
+            cursor:pointer;
+        }
+
+        p{
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Login</h2>
+
+    <input type="email" id="email" placeholder="Email">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <p>
+        Don't have an account?
+        <a href="register.html">Register</a>
+    </p>
+</div>
+
+<script>
+async function login() {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const response = await fetch("http://localhost:8080/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            email,
+            password
+        })
+    });
+
+    if(response.ok){
+
+        const user = await response.json();
+
+        localStorage.setItem("userId",user.id);
+        localStorage.setItem("username",user.username);
+
+        alert("Login Successful");
+
+        window.location.href="index.html";
+
+    }else{
+
+        alert("Invalid Credentials");
+
+    }
+}
+</script>
+
+</body>
+</html>

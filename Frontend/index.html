@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TypingMaster</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+</head>
+<body class="normal-mode">
+
+  <!-- ─────────────────────────── NORMAL MODE ─────────────────────────── -->
+  <div id="normal-view" class="view active">
+
+    <!-- NAV -->
+    <nav class="n-nav">
+      <div class="n-nav-left">
+        <span class="n-logo">⚡ TypingMaster</span>
+        <!-- <a href="#" class="n-link active">Home</a> -->
+        <!-- <a href="#" class="n-link">Practice</a>
+        <a href="#" class="n-link">Leaderboard</a>
+        <a href="#" class="n-link">Profile</a> -->
+      </div>
+      <div class="n-nav-right">
+        <button class="mode-toggle-btn active" id="btn-normal">Normal</button>
+        <button class="mode-toggle-btn" id="btn-coder">Coder</button>
+        <div class="n-avatar" id="profileName">A</div>
+      </div>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <div class="n-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="n-sidebar">
+        <div class="n-card">
+          <div class="n-card-title">YOUR BEST</div>
+          <div class="n-stat-row"><span>Best WPM</span><span class="n-val accent" id="n-best-wpm">0</span></div>
+          <div class="n-stat-row"><span>Best Accuracy</span><span class="n-val accent" id="n-best-acc">0%</span></div>
+          <div class="n-stat-row"><span>Tests Taken</span><span class="n-val" id="n-tests-taken">0</span></div>
+        </div>
+
+        <div class="n-card">
+          <div class="n-card-title">DAILY GOAL</div>
+          <div class="n-goal-text">10 sessions</div>
+          <div class="n-progress-track">
+            <div class="n-progress-fill" id="n-goal-bar" style="width:0%"></div>
+          </div>
+          <div class="n-goal-sub" id="n-goal-label">0 / 10 completed</div>
+        </div>
+
+        <div class="n-card">
+          <div class="n-card-title">DIFFICULTY</div>
+          <div class="n-diff-option active" data-diff="easy">
+            <span class="n-diff-icon">⭐</span>
+            <div><div class="n-diff-name">Easy</div><div class="n-diff-sub">Simple words &amp; sentences</div></div>
+          </div>
+          <div class="n-diff-option" data-diff="medium">
+            <span class="n-diff-icon">🔥</span>
+            <div><div class="n-diff-name">Medium</div><div class="n-diff-sub">Longer texts &amp; paragraphs</div></div>
+          </div>
+          <div class="n-diff-option" data-diff="hard">
+            <span class="n-diff-icon">👑</span>
+            <div><div class="n-diff-name">Hard</div><div class="n-diff-sub">Complex words &amp; punctuations</div></div>
+          </div>
+        </div>
+<button onclick="logout()">Logout</button>
+        <div class="n-illustration">
+          <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="140">
+            <circle cx="80" cy="60" r="30" fill="#f5c842" opacity="0.15"/>
+            <rect x="30" y="90" width="100" height="50" rx="8" fill="#1a1a2e" opacity="0.08"/>
+            <!-- <text x="80" y="68" text-anchor="middle" font-size="36">👩‍💻</text>
+            <text x="80" y="125" text-anchor="middle" font-size="28">⌨️</text> -->
+          </svg>
+        </div>
+      </aside>
+
+      <!-- CENTER -->
+      <main class="n-main">
+
+        <!-- TOP STATS -->
+        <div class="n-stats-bar">
+          <div class="n-stat-box">
+            <div class="n-stat-label">SPEED</div>
+            <div class="n-stat-big" id="n-wpm-display">0</div>
+            <div class="n-stat-unit">WPM</div>
+          </div>
+          <div class="n-stat-box accent-box">
+            <div class="n-stat-label">ACCURACY</div>
+            <div class="n-stat-big" id="n-acc-display">100%</div>
+            <div class="n-stat-unit">Last session</div>
+          </div>
+          <div class="n-stat-box">
+            <div class="n-stat-label">TIME LEFT</div>
+            <div class="n-stat-big" id="n-time-display">0:15</div>
+            <div class="n-stat-unit">Remaining</div>
+          </div>
+        </div>
+
+        <!-- TYPING AREA -->
+        <div class="n-typing-card">
+          <div class="n-typing-label">
+            <span class="n-live-dot" id="n-live-dot"></span>
+            <span id="n-session-status">PRESS START TO BEGIN</span>
+          </div>
+          <div class="n-text-display" id="n-text-display">
+            <!-- words rendered by JS -->
+          </div>
+          <div class="n-input-wrap">
+            <input type="text" id="n-input" class="n-input" placeholder="Start typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled />
+          </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="n-controls">
+          <button class="n-btn primary" id="n-start-btn">Start</button>
+          <button class="n-btn ghost" id="n-restart-btn">Restart</button>
+          <div class="n-time-pills">
+            <button class="n-pill active" data-time="15">15s</button>
+            <button class="n-pill" data-time="30">30s</button>
+            <button class="n-pill" data-time="60">60s</button>
+            <button class="n-pill" data-time="custom">Custom</button>
+          </div>
+        
+
+        <!-- SESSION STATS + SHORTCUTS -->
+        <div class="n-bottom-grid">
+          <div class="n-card n-session-stats">
+            <div class="n-card-title">SESSION STATS</div>
+            <div class="n-stat-row"><span>Characters Typed</span><span id="n-chars">0</span></div>
+            <div class="n-stat-row"><span>Accuracy</span><span id="n-sess-acc">100%</span></div>
+            <div class="n-stat-row"><span>WPM</span><span id="n-sess-wpm">0</span></div>
+            <div class="n-stat-row"><span>Errors</span><span id="n-errors">0</span></div>
+            <div class="n-stat-row"><span>Time</span><span id="n-time-taken">00:00</span></div>
+          </div>
+          <div class="n-card n-shortcuts">
+            <div class="n-card-title">KEYBOARD SHORTCUTS</div>
+            <div class="n-key-row"><kbd>Tab</kbd><span>Restart Test</span></div>
+            <div class="n-key-row"><kbd>Esc</kbd><span>Pause / Resume</span></div>
+            <div class="n-key-row"><kbd>Ctrl + Enter</kbd><span>Submit</span></div>
+            <div class="n-key-row"><kbd>Ctrl + R</kbd><span>Start / Restart</span></div>
+          </div>
+          
+
+</div>
+        </div>
+        <div class="n-bottom-grid">
+
+  <div class="n-card n-history-card">
+    <div class="n-card-title">RECENT RESULTS</div>
+
+    <table id="history-table">
+      <thead>
+        <tr>
+          <th>WPM</th>
+          <th>Accuracy</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody id="history-body">
+      </tbody>
+    </table>
+  </div>
+
+  <div class="n-card n-chart-card">
+    <div class="n-card-title">WPM PROGRESS</div>
+
+    <canvas id="wpmChart"></canvas>
+  </div>
+  </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="n-footer">
+      <span>Keep practicing, keep improving! 🚀</span>
+      <!-- <span>Streak: <strong id="n-streak">14 days</strong> 🔥</span> -->
+    </footer>
+  </div>
+
+
+  <!-- ─────────────────────────── CODER MODE ─────────────────────────── -->
+  <div id="coder-view" class="view">
+
+    <!-- NAV -->
+    <nav class="c-nav">
+      <div class="c-nav-left">
+        <span class="c-logo">⚡ <span>TypingMaster</span></span>
+        <!-- <a href="#" class="c-link active">Home</a>
+        <a href="#" class="c-link">Practice</a>
+        <a href="#" class="c-link">Leaderboard</a>
+        <a href="#" class="c-link">Profile</a> -->
+      </div>
+      <div class="c-nav-right">
+        <button class="c-mode-btn" id="cbtn-normal">Normal</button>
+        <button class="c-mode-btn active" id="cbtn-coder">Coder</button>
+       <!-- <div class="c-avatar" id="coderProfileName">A</div> -->
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="c-layout">
+
+      <!-- CENTER EDITOR -->
+      <div class="c-center">
+
+        <!-- TOP STATS -->
+        <div class="c-stats-bar">
+          <div class="c-stat">
+            <div class="c-stat-key">WPM</div>
+            <div class="c-stat-val green" id="c-wpm-display">0</div>
+            <div class="c-stat-unit">words/min</div>
+          </div>
+          <div class="c-stat">
+            <div class="c-stat-key">ACCURACY</div>
+            <div class="c-stat-val" id="c-acc-display">100%</div>
+            <div class="c-stat-unit">this session</div>
+          </div>
+          <div class="c-stat">
+            <div class="c-stat-key">TIME LEFT</div>
+            <div class="c-stat-val dim" id="c-time-display">1:00</div>
+            <div class="c-stat-unit">remaining</div>
+          </div>
+          <div class="c-stat">
+            <div class="c-stat-key">ERRORS</div>
+            <div class="c-stat-val red" id="c-errors-display">0</div>
+            <div class="c-stat-unit">keystrokes</div>
+          </div>
+        </div>
+
+        <!-- LANG + DIFFICULTY -->
+        <div class="c-selectors">
+          <div class="c-selector-group">
+            <label class="c-sel-label">LANGUAGE</label>
+            <select class="c-select" id="c-lang-select">
+              <option>JavaScript</option>
+              <option>Python</option>
+              <option>C++</option>
+              <option>Java</option>
+              <option>Go</option>
+              <option>Rust</option>
+            </select>
+          </div>
+          <div class="c-selector-group">
+            <label class="c-sel-label">DIFFICULTY</label>
+            <div class="c-diff-pills">
+              <button class="c-diff-pill" data-cdiff="easy">Easy</button>
+              <button class="c-diff-pill" data-cdiff="medium">Medium</button>
+              <button class="c-diff-pill active" data-cdiff="hard">Hard</button>
+              <button class="c-diff-pill" data-cdiff="interview">Interview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CODE EDITOR -->
+        <div class="c-editor">
+          <div class="c-editor-header">
+            <span class="c-file-tab active" id="c-filename">bubbleSort.js</span>
+            <span class="c-lang-badge" id="c-lang-badge">JavaScript</span>
+          </div>
+          <div class="c-code-body">
+            <div class="c-line-nums" id="c-line-nums"></div>
+            <div class="c-code-text" id="c-text-display"></div>
+          </div>
+        </div>
+
+        <!-- TYPING INPUT -->
+        <div class="c-input-wrap">
+          <input type="text" id="c-input" class="c-input" placeholder="Start typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled />
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="c-controls">
+          <button class="c-btn run" id="c-start-btn">▶ Start Session</button>
+          <button class="c-btn" id="c-reset-btn">↺ Reset</button>
+          <div class="c-time-pills">
+            <button class="c-tpill" data-ctime="15">15s</button>
+            <button class="c-tpill" data-ctime="30">30s</button>
+            <button class="c-tpill active" data-ctime="60">60s</button>
+            <button class="c-tpill" data-ctime="custom">Custom</button>
+            <button class="c-tpill" data-ctime="snippet">Snippet</button>
+          </div>
+        </div>
+
+        <!-- FOOTER BAR -->
+        <div class="c-footer-bar">
+          <span class="c-key-hint"><kbd>Tab</kbd> Restart</span>
+          <span class="c-key-hint"><kbd>Esc</kbd> Pause</span>
+          <span class="c-key-hint"><kbd>Ctrl+Enter</kbd> Submit</span>
+          <!-- <span style="margin-left:auto;">Streak: <strong id="c-streak">21 days</strong> 🔥</span> -->
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <!-- <aside class="c-sidebar">
+        <div class="c-s-block">
+          <div class="c-s-label">PERSONAL BEST</div>
+          <div class="c-s-row"><span>Best WPM</span><span class="c-hi" id="c-best-wpm">118</span></div>
+          <div class="c-s-row"><span>Best Accuracy</span><span class="c-hi" id="c-best-acc">99.1%</span></div>
+          <div class="c-s-row"><span>Streak</span><span id="c-best-streak">21 days</span></div>
+        </div>
+
+        <div class="c-s-block">
+          <div class="c-s-label">SESSION PROGRESS</div>
+          <div class="c-s-row"><span>Chars Typed</span><span id="c-chars-display">0 / 0</span></div>
+          <div class="c-prog-track"><div class="c-prog-fill" id="c-prog-fill" style="width:0%"></div></div>
+          <div class="c-prog-pct" id="c-prog-pct">0% complete</div>
+        </div>
+
+        <div class="c-s-block">
+          <div class="c-s-label">RECENT SNIPPETS</div>
+          <div class="c-snippet" data-snip="js"><span class="c-snip-lang">js</span> — bubble sort</div>
+          <div class="c-snippet" data-snip="py"><span class="c-snip-lang">py</span> — two pointer</div>
+          <div class="c-snippet" data-snip="cpp"><span class="c-snip-lang">cpp</span> — binary search</div>
+          <div class="c-snippet" data-snip="go"><span class="c-snip-lang">go</span> — goroutines</div>
+        </div>
+
+        <div class="c-s-block">
+          <div class="c-s-label">LANGUAGE</div>
+          <div class="c-lang-tags">
+            <span class="c-lang-tag active" data-lang="JavaScript">JavaScript</span>
+            <span class="c-lang-tag" data-lang="Python">Python</span>
+            <span class="c-lang-tag" data-lang="C++">C++</span>
+            <span class="c-lang-tag" data-lang="Java">Java</span>
+            <span class="c-lang-tag" data-lang="Go">Go</span>
+            <span class="c-lang-tag" data-lang="Rust">Rust</span>
+          </div>
+        </div>
+
+        <div class="c-s-block">
+          <div class="c-s-label">WPM OVER TIME</div>
+          <canvas id="c-wpm-chart" width="200" height="80"></canvas>
+        </div>
+      </aside> -->
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
