@@ -875,7 +875,7 @@ async function loadChart() {
     );
 
     const data = await res.json();
-
+data.reverse();
     const canvas =
       document.getElementById("wpmChart");
 
