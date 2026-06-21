@@ -1,16 +1,10 @@
-/* ══════════════════════════════════════════════════
-   TypingMaster — script.js
-   - Backspace fully supported (undo last char)
-   - Coder mode text is clearly visible (#666 gray)
-   - Both modes use keydown-based char tracking
-══════════════════════════════════════════════════ */
+
 const userId = localStorage.getItem("userId");
 
 if (!userId) {
     window.location.href = "login.html";
 }
-const API_BASE = "http://localhost:8080";
-/* ── TEXT POOLS ── */
+const API_BASE = "https://typingmaster-2.onrender.com";
 const NORMAL_TEXTS = {
   easy: [
     "The quick brown fox jumps over the lazy dog and then runs away into the forest.",
@@ -57,8 +51,6 @@ const CODE_SNIPPETS = {
     code: `fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {\n    if x.len() > y.len() {\n        x\n    } else {\n        y\n    }\n}\n\nfn main() {\n    let s1 = String::from("long string");\n    let s2 = String::from("xyz");\n    let result = longest(s1.as_str(), s2.as_str());\n    println!("Longest: {}", result);\n}`
   }
 };
-
-/* ══════════════ SHARED ══════════════ */
 let currentMode = "normal";
 const DAILY_GOAL_TARGET = 10;
 const DAILY_GOAL_STORAGE_KEY = "typingMasterDailyGoal";
@@ -114,11 +106,7 @@ document.getElementById("cbtn-normal").addEventListener("click", switchToNormal)
 document.getElementById("cbtn-coder").addEventListener("click", switchToCoder);
 
 
-/* ══════════════════════════════════════════
-   SHARED TYPING ENGINE (used by both modes)
-   charStates[i] = "untyped" | "correct" | "incorrect"
-   charIndex = position of cursor
-══════════════════════════════════════════ */
+
 
 function buildEngine(config) {
   return {
@@ -128,14 +116,14 @@ function buildEngine(config) {
     timeLeft: config.defaultTime,
     text: "",
     charIndex: 0,
-    charStates: [],   // tracks each char: "untyped"|"correct"|"incorrect"
+    charStates: [],   
     errors: 0,
     correctChars: 0,
     totalTyped: 0,
     startTime: null,
     wpmHistory: [],
 
-    /* — render chars into the display element — */
+   
     renderChars(initClass) {
       const el = config.getDisplay();
       el.innerHTML = "";
@@ -144,7 +132,7 @@ function buildEngine(config) {
         const span = document.createElement("span");
         span.classList.add("char");
         const ch = this.text[i];
-        // preserve newlines as visible characters
+       
         span.textContent = ch;
         span.dataset.index = i;
         span.classList.add(i === 0 ? "current" : initClass);
@@ -168,7 +156,6 @@ function buildEngine(config) {
 
     setCurrent(i) {
       const chars = this.getChars();
-      // remove current from all
       this.getChars().forEach(c => c.classList.remove("current"));
       if (chars[i]) {
         chars[i].classList.add("current");
@@ -181,11 +168,7 @@ function buildEngine(config) {
 
       if (key === "Backspace") {
         if (this.charIndex === 0) return;
-
-        // move cursor back
         this.charIndex--;
-
-        // restore the char we're going back to
         const wasState = this.charStates[this.charIndex];
         if (wasState === "correct") {
           this.correctChars = Math.max(0, this.correctChars - 1);
@@ -193,8 +176,6 @@ function buildEngine(config) {
           this.errors = Math.max(0, this.errors - 1);
         }
         this.totalTyped = Math.max(0, this.totalTyped - 1);
-
-        // reset that char to untyped (cursor will be on it)
         this.applyChar(this.charIndex, "untyped");
         this.charStates[this.charIndex] = "untyped";
         this.setCurrent(this.charIndex);
@@ -224,7 +205,6 @@ function buildEngine(config) {
       if (this.charIndex < this.text.length) {
         this.setCurrent(this.charIndex);
       } else {
-        // remove current highlight from last char
         this.getChars().forEach(c => c.classList.remove("current"));
       }
 
@@ -461,8 +441,6 @@ nmEl.restartBtn.addEventListener("click", () => {
   NM.text = pool[0];
   NM.renderChars("untyped");
 });
-
-/* intercept keydown on normal input for backspace */
 nmEl.input.addEventListener("keydown", (e) => {
   if (NM.state !== "running") return;
   if (e.key === "Backspace") {
@@ -474,14 +452,11 @@ nmEl.input.addEventListener("input", (e) => {
   if (NM.state !== "running") return;
   const val = e.target.value;
   if (!val) return;
-  // process each character typed (handles paste edge case too)
   for (const ch of val) {
     NM.handleKey(ch);
   }
   e.target.value = "";
 });
-
-// Time pills
 document.querySelectorAll(".n-pill").forEach(pill => {
   pill.addEventListener("click", () => {
     document.querySelectorAll(".n-pill").forEach(p => p.classList.remove("active"));
@@ -500,8 +475,6 @@ document.querySelectorAll(".n-pill").forEach(pill => {
     else { NM.timeLeft = NM.timeLimit; NM.updateTimeDisplay(); }
   });
 });
-
-// Difficulty
 document.querySelectorAll(".n-diff-option").forEach(opt => {
   opt.addEventListener("click", () => {
     document.querySelectorAll(".n-diff-option").forEach(o => o.classList.remove("active"));
@@ -543,10 +516,10 @@ const CM = buildEngine({
   getDisplay: () => cmEl.display,
   getInput: () => cmEl.input,
   onRenderDone(text) {
-    // render line numbers
+    
     const lines = text.split("\n").length;
     cmEl.lineNums.innerHTML = Array.from({length: lines}, (_, i) => i + 1).join("<br>");
-    // update filename/badge
+    
     const snip = CODE_SNIPPETS[cmLanguage];
     cmEl.filename.textContent = snip.name;
     cmEl.langBadge.textContent = cmLanguage;
@@ -604,7 +577,6 @@ cmEl.startBtn.addEventListener("click", () => {
 });
 cmEl.resetBtn.addEventListener("click", () => CM.reset());
 
-/* intercept keydown on coder input for backspace + Tab */
 cmEl.input.addEventListener("keydown", (e) => {
   if (CM.state !== "running") return;
   if (e.key === "Backspace") {
@@ -612,7 +584,7 @@ cmEl.input.addEventListener("keydown", (e) => {
     CM.handleKey("Backspace");
   } else if (e.key === "Tab") {
     e.preventDefault();
-    // type two spaces for tab in code
+    
     CM.handleKey(" ");
     CM.handleKey(" ");
   } else if (e.key === "Enter") {
@@ -630,7 +602,6 @@ cmEl.input.addEventListener("input", (e) => {
   e.target.value = "";
 });
 
-// Language select dropdown
 cmEl.langSelect.addEventListener("change", () => {
   cmLanguage = cmEl.langSelect.value;
   syncLangTags(cmLanguage);
@@ -653,7 +624,7 @@ function syncLangTags(lang) {
   });
 }
 
-// Coder difficulty pills
+
 document.querySelectorAll(".c-diff-pill").forEach(pill => {
   pill.addEventListener("click", () => {
     document.querySelectorAll(".c-diff-pill").forEach(p => p.classList.remove("active"));
@@ -661,7 +632,6 @@ document.querySelectorAll(".c-diff-pill").forEach(pill => {
   });
 });
 
-// Coder time pills
 document.querySelectorAll(".c-tpill").forEach(pill => {
   pill.addEventListener("click", () => {
     document.querySelectorAll(".c-tpill").forEach(p => p.classList.remove("active"));
@@ -717,8 +687,6 @@ function drawWpmChart(data) {
   ctx.fillText(0, 2, h - 2);
 }
 
-
-/* ── RESULT OVERLAY ── */
 function showResult(mode, wpm, acc, elapsed) {
   const s = Math.floor(elapsed % 60);
   const m = Math.floor(elapsed / 60);
@@ -754,8 +722,6 @@ function showResult(mode, wpm, acc, elapsed) {
   });
 }
 
-
-/* ── GLOBAL KEYBOARD SHORTCUTS ── */
 document.addEventListener("keydown", (e) => {
   const active = document.activeElement;
   const isTyping = active === nmEl.input || active === cmEl.input;
@@ -946,7 +912,7 @@ async function loadChart() {
 }
 
 
-/* ── INIT ── */
+
 (function init() {
     loadBestResult();
 loadHistory();
